@@ -22,6 +22,16 @@ def validate(line):
         return "entry has leading/trailing whitespace"
     if "\n" in line or "\r" in line:
         return "entry must be a single line"
+    # Voice guard: the line must sound like a machine saying it about
+    # itself, not a generic human pickup line — it needs an AI-voice word.
+    voice_words = ("token", "attention", "model", "prompt", "neural",
+                   "weights", "context", "embedding", "gradient", "latency")
+    lowered = line.lower()
+    if not any(word in lowered for word in voice_words):
+        return "entry must read as an AI agent's own line (needs an AI-voice word)"
+    # It must address someone directly.
+    if "you" not in lowered.split():
+        return "entry must address someone directly"
     return None
 
 
